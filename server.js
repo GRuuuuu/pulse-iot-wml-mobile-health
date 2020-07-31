@@ -38,19 +38,22 @@ if (process.env.VCAP_SERVICES) {
 	}
 }
 
-cloudant({account:db_props.username, password:db_props.password}, function(err, cloudant) {
+cloudant({account:db_props.username, plugins:{iamauth:{iamApiKey:db_props.apikey}}}, function(err, cloudant) {
   console.log('Connected to Cloudant');
-  cloudant.db.list(function(err, all_dbs) {
-     if (all_dbs.indexOf(dbname) < 0) {
-        cloudant.db.create(dbname, function() {
-            device_info = cloudant.use(dbname);
-            console.log("created DB " + dbname);
-        });
-      } else {
-        console.log("found DB " + dbname);
-        device_info = cloudant.use(dbname);
-      }
-  })
+  console.log("[ERR] connect cloudant: "+err);
+  cloudant.db.list().then((body) => {
+    if(body.indexOf(dbname) < 0){
+      cloudant.db.create(dbname).then(() => {
+        device_info=cloudant.use(dbname);
+        console.log("created DB " + dbname);
+      }).catch((err) => { console.log("[ERR]create DB: "+err);});
+    }
+    else {
+      console.log("found DB " + dbname);
+      device_info = cloudant.use(dbname);
+    }
+  }).catch((err) => { console.log("[ERR]list DB: "+err); });
+  
 })
 
 app.get('/api/:sensordata', function(req, res) {
