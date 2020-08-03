@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('port', port);
 app.use('/api', api);
-
+/*
 if (process.env.VCAP_SERVICES) {
 	var env = JSON.parse(process.env.VCAP_SERVICES);
 	console.log(env);
@@ -36,7 +36,13 @@ if (process.env.VCAP_SERVICES) {
 	} else {
 		console.log('You must bind the Internet of Things service to this application');
 	}
-}
+}*/
+
+
+//***Put the credentials here***
+db_props= 
+iot_props= 
+
 
 cloudant({account:db_props.username, plugins:{iamauth:{iamApiKey:db_props.apikey}}}, function(err, cloudant) {
   console.log('Connected to Cloudant');
