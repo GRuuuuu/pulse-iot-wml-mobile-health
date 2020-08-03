@@ -40,8 +40,8 @@ if (process.env.VCAP_SERVICES) {
 
 
 //***Put the credentials here***
-db_props= 
-iot_props= 
+db_props= {username: "...",
+apikey: "..."};
 
 
 cloudant({account:db_props.username, plugins:{iamauth:{iamApiKey:db_props.apikey}}}, function(err, cloudant) {
